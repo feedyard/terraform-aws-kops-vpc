@@ -1,5 +1,5 @@
 resource "aws_vpc" "mod" {
-  cidr_block           = "${var.cidr}"
+  cidr_block           = "10.${var.cidr_reservation_start}.0.0/16"
   enable_dns_hostnames = "${var.enable_dns_hostnames}"
   enable_dns_support   = "${var.enable_dns_support}"
   tags                 = "${merge(var.tags, map("Name", format("%s", var.name)))}"
@@ -8,9 +8,9 @@ resource "aws_vpc" "mod" {
 # public subnets
 resource "aws_subnet" "public_subnet" {
   vpc_id            = "${aws_vpc.mod.id}"
-  cidr_block        = "${var.public_subnets[count.index]}"
+  cidr_block        = "10.${var.cidr_reservation_start}.${var.public_subnet_start[count.index]}.0/${var.public_subnet_size}"
   availability_zone = "${element(var.azs, count.index)}"
-  count             = "${length(var.public_subnets)}"
+  count             = "${length(var.azs)}"
   tags              = "${merge(var.tags, map("Name", format("%s-public-subnet-%s", var.name, element(var.azs, count.index))))}"
 
   map_public_ip_on_launch = "${var.map_public_ip_on_launch}"
@@ -34,7 +34,7 @@ resource "aws_route" "public_internet_gateway" {
 }
 
 resource "aws_route_table_association" "public" {
-  count          = "${length(var.public_subnets)}"
+  count          = "${length(var.azs)}"
   subnet_id      = "${element(aws_subnet.public_subnet.*.id, count.index)}"
   route_table_id = "${aws_route_table.public.id}"
 }
@@ -42,9 +42,9 @@ resource "aws_route_table_association" "public" {
 # nat subnets
 resource "aws_subnet" "nat_subnet" {
   vpc_id            = "${aws_vpc.mod.id}"
-  cidr_block        = "${var.nat_subnets[count.index]}"
+  cidr_block        = "10.${var.cidr_reservation_start}.${var.nat_subnet_start[count.index]}.0/${var.nat_subnet_size}"
   availability_zone = "${element(var.azs, count.index)}"
-  count             = "${length(var.nat_subnets)}"
+  count             = "${length(var.azs)}"
   tags              = "${merge(var.tags, map("Name", format("%s-nat-subnet-%s", var.name, element(var.azs, count.index))))}"
 }
 
@@ -76,7 +76,7 @@ resource "aws_route" "nat_gateway" {
 }
 
 resource "aws_route_table_association" "nat_subnet" {
-  count          = "${length(var.nat_subnets)}"
+  count          = "${length(var.azs)}"
   subnet_id      = "${element(aws_subnet.nat_subnet.*.id, count.index)}"
   route_table_id = "${element(aws_route_table.nat.*.id, count.index)}"
 }
@@ -84,9 +84,9 @@ resource "aws_route_table_association" "nat_subnet" {
 # internal subnets
 resource "aws_subnet" "internal_subnet" {
   vpc_id            = "${aws_vpc.mod.id}"
-  cidr_block        = "${var.internal_subnets[count.index]}"
+  cidr_block        = "10.${var.cidr_reservation_start}.${var.internal_subnet_start[count.index]}.0/${var.internal_subnet_size}"
   availability_zone = "${element(var.azs, count.index)}"
-  count             = "${length(var.internal_subnets)}"
+  count             = "${length(var.azs)}"
   tags              = "${merge(var.tags, map("Name", format("%s-internal-subnet-%s", var.name, element(var.azs, count.index))))}"
 }
 
@@ -98,7 +98,7 @@ resource "aws_route_table" "internal" {
 }
 
 resource "aws_route_table_association" "internal" {
-  count          = "${length(var.internal_subnets)}"
+  count          = "${length(var.azs)}"
   subnet_id      = "${element(aws_subnet.internal_subnet.*.id, count.index)}"
   route_table_id = "${element(aws_route_table.internal.*.id, count.index)}"
 }

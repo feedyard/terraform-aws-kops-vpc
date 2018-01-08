@@ -39,17 +39,17 @@ variable "internal_subnet_start" {
 
 variable "enable_dns_hostnames" {
   description = "should be true to use private DNS within the VPC"
-  default     = false
+  default     = "false"
 }
 
 variable "enable_dns_support" {
   description = "should be true to use private DNS within the VPC"
-  default     = false
+  default     = "false"
 }
 
 variable "map_public_ip_on_launch" {
   description = "should be true if you do want to auto-assign public IP on launch"
-  default     = false
+  default     = "false"
 }
 
 variable "public_propagating_vgws" {
@@ -59,12 +59,17 @@ variable "public_propagating_vgws" {
 
 variable "enable_nat_gateway" {
   description = "should be true to provision NAT Gateways for each private network"
-  default     = false
+  default     = "false"
 }
 
 variable "private_propagating_vgws" {
   description = "A list of VGWs the private route table should propagate."
   default     = []
+}
+
+variable "k8_cluster_name" {
+  description = "The name of the intendend K8 Cluster - will be used with Kops"
+  default = ""
 }
 
 variable "tags" {

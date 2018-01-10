@@ -1,5 +1,5 @@
 resource "aws_vpc" "mod" {
-  cidr_block           = "10.${var.cidr_reservation_start}.0.0/16"
+  cidr_block           = "10.${var.cidr_reservation_start}.${var.cidr_reservation_offset}.0/${var.cidr_reservation_size}"
   enable_dns_hostnames = "${var.enable_dns_hostnames}"
   enable_dns_support   = "${var.enable_dns_support}"
   tags                 = "${merge(var.tags, map("Name", format("%s", var.name)), map(format("kubernetes.io/cluster/%s",var.k8_cluster_name),"shared"))}"

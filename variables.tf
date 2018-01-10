@@ -1,78 +1,88 @@
+# vpc name for an instance of the platform"
 variable "name" {
-  description = "vpc name for an instance of the platform"
 }
 
+# Second octet for IANA private class A network reservation  10.X.0 0
 variable "cidr_reservation_start" {
-  description = "Second octet for IANA private class A network reservation"
 }
 
-variable "azs" {
-  description = "The list of Availability zones in the region to span"
-  default     = []
+# default /19 (8192 addresses) network size for a platform instance  10.0.0.0/X
+variable "cidr_reservation_size" {
+  default     = "19"
 }
 
+# default reservation offset for a platform instance  10.0.X.0/X
+variable "cidr_reservation_offset" {
+  default     = "0"
+}
+
+# default public subnet size  /23 = 512 addresses
 variable "public_subnet_size" {
-  description = "network size"
-  default = "20"
-}
-variable "public_subnet_start" {
-  description = "starting number for three, sequential public subnets"
-  default = ["0","16","32"]
+  default = "23"
 }
 
+# default starting point for public subnets in up to four available zones 0f /23
+variable "public_subnet_start" {
+  default = ["0","2","4","6"]
+}
+
+# default nat subnet size  /22 = 1024 addresses
 variable "nat_subnet_size" {
-  description = "network size"
   default = "22"
 }
+
+# default starting point for nat subnets in up to four available zones 0f /22
 variable "nat_subnet_start" {
-  description = "starting number for three, sequential public subnets"
-  default = ["48","52","56"]
+  default = ["8","12","16","20"]
 }
+
+
+# default internal subnet size  /23 = 512 addresses
 variable "internal_subnet_size" {
-  description = "network size"
-  default = "20"
+  default = "23"
 }
+
+# default starting point for internal subnets in up to four available zones 0f /23
 variable "internal_subnet_start" {
-  description = "starting number for three, sequential public subnets"
-  default = ["64","80","96"]
+  default = ["24","26","28","30"]
 }
 
+# should be true to use private DNS within the VPC
 variable "enable_dns_hostnames" {
-  description = "should be true to use private DNS within the VPC"
   default     = "false"
 }
 
+# should be true to use private DNS within the VPC
 variable "enable_dns_support" {
-  description = "should be true to use private DNS within the VPC"
   default     = "false"
 }
 
+# should be true if you do want to auto-assign public IP on launch
 variable "map_public_ip_on_launch" {
-  description = "should be true if you do want to auto-assign public IP on launch"
   default     = "false"
 }
 
+# A list of VGWs the public route table should propagate.
 variable "public_propagating_vgws" {
-  description = "A list of VGWs the public route table should propagate."
   default     = []
 }
 
+# should be true to provision NAT Gateways for each NAT network
 variable "enable_nat_gateway" {
-  description = "should be true to provision NAT Gateways for each private network"
   default     = "false"
 }
 
+# A list of VGWs the private route table should propagate
 variable "private_propagating_vgws" {
-  description = "A list of VGWs the private route table should propagate."
   default     = []
 }
 
+# The name of the intendend K8 Cluster
 variable "k8_cluster_name" {
-  description = "The name of the intendend K8 Cluster - will be used with Kops"
   default = ""
 }
 
+# A map of tags to add to all resources
 variable "tags" {
-  description = "A map of tags to add to all resources"
   default     = {}
 }

@@ -36,7 +36,6 @@ variable "nat_subnet_start" {
   default = ["8","12","16","20"]
 }
 
-
 # default internal subnet size  /23 = 512 addresses
 variable "internal_subnet_size" {
   default = "23"
@@ -45,6 +44,11 @@ variable "internal_subnet_size" {
 # default starting point for internal subnets in up to four available zones 0f /23
 variable "internal_subnet_start" {
   default = ["24","26","28","30"]
+}
+
+# list of azs
+variable "azs" {
+  default = []
 }
 
 # should be true to use private DNS within the VPC

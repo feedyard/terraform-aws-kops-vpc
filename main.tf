@@ -5,47 +5,13 @@ resource "aws_vpc" "mod" {
   tags                 = "${merge(var.tags, map("Name", format("%s", var.name)), map(format("kubernetes.io/cluster/%s",var.k8_cluster_name),"shared"))}"
 }
 
-# public subnets
-resource "aws_subnet" "public_subnet" {
-  vpc_id            = "${aws_vpc.mod.id}"
-  cidr_block        = "10.${var.cidr_reservation_start}.${var.public_subnet_start[count.index]}.0/${var.public_subnet_size}"
-  availability_zone = "${element(var.azs, count.index)}"
-  count             = "${length(var.azs)}"
-  tags              = "${merge(var.tags, map("Name", format("%s-public-subnet-%s", var.name, element(var.azs, count.index))), map(format("kubernetes.io/cluster/%s",var.k8_cluster_name),"shared"))}"
-
-  map_public_ip_on_launch = "${var.map_public_ip_on_launch}"
-}
-
-resource "aws_internet_gateway" "mod" {
-  vpc_id = "${aws_vpc.mod.id}"
-  tags   = "${merge(var.tags, map("Name", format("%s-igw", var.name)), map(format("kubernetes.io/cluster/%s",var.k8_cluster_name),"shared"))}"
-}
-
-resource "aws_route_table" "public" {
-  vpc_id           = "${aws_vpc.mod.id}"
-  propagating_vgws = ["${var.public_propagating_vgws}"]
-  tags             = "${merge(var.tags, map("Name", format("%s-rt-public", var.name)))}"
-}
-
-resource "aws_route" "public_internet_gateway" {
-  route_table_id         = "${aws_route_table.public.id}"
-  destination_cidr_block = "0.0.0.0/0"
-  gateway_id             = "${aws_internet_gateway.mod.id}"
-}
-
-resource "aws_route_table_association" "public" {
-  count          = "${length(var.azs)}"
-  subnet_id      = "${element(aws_subnet.public_subnet.*.id, count.index)}"
-  route_table_id = "${aws_route_table.public.id}"
-}
-
 # nat subnets
 resource "aws_subnet" "nat_subnet" {
   vpc_id            = "${aws_vpc.mod.id}"
   cidr_block        = "10.${var.cidr_reservation_start}.${var.nat_subnet_start[count.index]}.0/${var.nat_subnet_size}"
   availability_zone = "${element(var.azs, count.index)}"
   count             = "${length(var.azs)}"
-  tags              = "${merge(var.tags, map("Name", format("%s-nat-subnet-%s", var.name, element(var.azs, count.index))), map(format("kubernetes.io/cluster/%s",var.k8_cluster_name),"shared"))}"
+  tags              = "${merge(var.tags, map("Name", format("subnet-%s-nat-%s", var.name, element(var.azs, count.index))), map(format("kubernetes.io/cluster/%s",var.k8_cluster_name),"shared"))}"
 }
 
 resource "aws_nat_gateway" "natgw" {
@@ -83,13 +49,47 @@ resource "aws_route_table_association" "nat_subnet" {
   route_table_id = "${element(aws_route_table.nat.*.id, count.index)}"
 }
 
+# public subnets
+resource "aws_subnet" "public_subnet" {
+  vpc_id            = "${aws_vpc.mod.id}"
+  cidr_block        = "10.${var.cidr_reservation_start}.${var.public_subnet_start[count.index]}.0/${var.public_subnet_size}"
+  availability_zone = "${element(var.azs, count.index)}"
+  count             = "${length(var.azs)}"
+  tags              = "${merge(var.tags, map("Name", format("subnet-%s-public-%s", var.name, element(var.azs, count.index))), map(format("kubernetes.io/cluster/%s",var.k8_cluster_name),"shared"))}"
+
+  map_public_ip_on_launch = "${var.map_public_ip_on_launch}"
+}
+
+resource "aws_internet_gateway" "mod" {
+  vpc_id = "${aws_vpc.mod.id}"
+  tags   = "${merge(var.tags, map("Name", format("%s-igw", var.name)), map(format("kubernetes.io/cluster/%s",var.k8_cluster_name),"shared"))}"
+}
+
+resource "aws_route_table" "public" {
+  vpc_id           = "${aws_vpc.mod.id}"
+  propagating_vgws = ["${var.public_propagating_vgws}"]
+  tags             = "${merge(var.tags, map("Name", format("%s-rt-public", var.name)))}"
+}
+
+resource "aws_route" "public_internet_gateway" {
+  route_table_id         = "${aws_route_table.public.id}"
+  destination_cidr_block = "0.0.0.0/0"
+  gateway_id             = "${aws_internet_gateway.mod.id}"
+}
+
+resource "aws_route_table_association" "public" {
+  count          = "${length(var.azs)}"
+  subnet_id      = "${element(aws_subnet.public_subnet.*.id, count.index)}"
+  route_table_id = "${aws_route_table.public.id}"
+}
+
 # internal subnets
 resource "aws_subnet" "internal_subnet" {
   vpc_id            = "${aws_vpc.mod.id}"
   cidr_block        = "10.${var.cidr_reservation_start}.${var.internal_subnet_start[count.index]}.0/${var.internal_subnet_size}"
   availability_zone = "${element(var.azs, count.index)}"
   count             = "${length(var.azs)}"
-  tags              = "${merge(var.tags, map("Name", format("%s-internal-subnet-%s", var.name, element(var.azs, count.index))), map(format("kubernetes.io/cluster/%s",var.k8_cluster_name),"shared"))}"
+  tags              = "${merge(var.tags, map("Name", format("subnet-%s-internal-%s", var.name, element(var.azs, count.index))), map(format("kubernetes.io/cluster/%s",var.k8_cluster_name),"shared"))}"
 }
 
 resource "aws_route_table" "internal" {

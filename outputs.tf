@@ -79,105 +79,181 @@ output "internal_route_table_ids" {
 
 # maps currently used by kops pipeline
 output "vpc" {
-  value = "${
-     map(
-        "id", "${aws_vpc.mod.id}",
-        "cidr", "${aws_vpc.mod.cidr_block}",
-       )
-     }"
-}
-
-output "public_subnet_objects" {
-  value = "${
-   map(
-       "${aws_subnet.public_subnet.0.tags.Name}" , map(
-          "id", "${aws_subnet.public_subnet.0.id}",
-          "az", "${aws_subnet.public_subnet.0.availability_zone}",
-          "cidr", "${aws_subnet.public_subnet.0.cidr_block}",
-          "name", "${aws_subnet.public_subnet.0.tags.Name}"
-        ),
-        "${aws_subnet.public_subnet.1.tags.Name}" , map(
-          "id", "${aws_subnet.public_subnet.1.id}",
-          "az", "${aws_subnet.public_subnet.1.availability_zone}",
-          "cidr", "${aws_subnet.public_subnet.1.cidr_block}",
-          "name", "${aws_subnet.public_subnet.1.tags.Name}"
-        ),
-        "${aws_subnet.public_subnet.2.tags.Name}" , map(
-          "id", "${aws_subnet.public_subnet.2.id}",
-          "az", "${aws_subnet.public_subnet.2.availability_zone}",
-          "cidr", "${aws_subnet.public_subnet.2.cidr_block}",
-          "name", "${aws_subnet.public_subnet.2.tags.Name}"
-        ),
-        "${aws_subnet.public_subnet.3.tags.Name}" , map(
-          "id", "${aws_subnet.public_subnet.3.id}",
-          "az", "${aws_subnet.public_subnet.3.availability_zone}",
-          "cidr", "${aws_subnet.public_subnet.3.cidr_block}",
-          "name", "${aws_subnet.public_subnet.3.tags.Name}"
-        ),
-    )
-  }"
+  value = {
+        id = "${aws_vpc.mod.id}"
+        cidr = "${aws_vpc.mod.cidr_block}"
+     }
 }
 
 output "nat_subnet_objects" {
-
-  value = "${
-   map(
-       "${aws_subnet.nat_subnet.0.tags.Name}" , map(
-          "id", "${aws_subnet.nat_subnet.0.id}",
-          "az", "${aws_subnet.nat_subnet.0.availability_zone}",
-          "cidr", "${aws_subnet.nat_subnet.0.cidr_block}",
-          "name", "${aws_subnet.nat_subnet.0.tags.Name}"
-        ),
-        "${aws_subnet.nat_subnet.1.tags.Name}" , map(
-          "id", "${aws_subnet.nat_subnet.1.id}",
-          "az", "${aws_subnet.nat_subnet.1.availability_zone}",
-          "cidr", "${aws_subnet.nat_subnet.1.cidr_block}",
-          "name", "${aws_subnet.nat_subnet.1.tags.Name}"
-        ),
-        "${aws_subnet.nat_subnet.2.tags.Name}" , map(
-          "id", "${aws_subnet.nat_subnet.2.id}",
-          "az", "${aws_subnet.nat_subnet.2.availability_zone}",
-          "cidr", "${aws_subnet.nat_subnet.2.cidr_block}",
-          "name", "${aws_subnet.nat_subnet.2.tags.Name}"
-        ),
-        "${aws_subnet.nat_subnet.3.tags.Name}" , map(
-          "id", "${aws_subnet.nat_subnet.3.id}",
-          "az", "${aws_subnet.nat_subnet.3.availability_zone}",
-          "cidr", "${aws_subnet.nat_subnet.3.cidr_block}",
-          "name", "${aws_subnet.nat_subnet.3.tags.Name}"
-        ),
-    )
-  }"
+  value = {
+    id = "${aws_subnet.nat_subnet.*.id}"
+    az = "${aws_subnet.nat_subnet.*.availability_zone}"
+    cidr = "${aws_subnet.nat_subnet.*.cidr_block}"
+    name = "${aws_subnet.nat_subnet.*.tags.Name}"
+  }
 }
 
+output "public_subnet_objects" {
+  value = {
+    id = "${aws_subnet.public_subnet.*.id}"
+    az = "${aws_subnet.public_subnet.*.availability_zone}"
+    cidr = "${aws_subnet.public_subnet.*.cidr_block}"
+    name = "${aws_subnet.public_subnet.*.tags.Name}"
+  }
+}
 
 output "internal_subnet_objects" {
-  value = "${
-   map(
-       "${aws_subnet.internal_subnet.0.tags.Name}" , map(
-          "id", "${aws_subnet.internal_subnet.0.id}",
-          "az", "${aws_subnet.internal_subnet.0.availability_zone}",
-          "cidr", "${aws_subnet.internal_subnet.0.cidr_block}",
-          "name", "${aws_subnet.internal_subnet.0.tags.Name}"
-        ),
-        "${aws_subnet.internal_subnet.1.tags.Name}" , map(
-          "id", "${aws_subnet.internal_subnet.1.id}",
-          "az", "${aws_subnet.internal_subnet.1.availability_zone}",
-          "cidr", "${aws_subnet.internal_subnet.1.cidr_block}",
-          "name", "${aws_subnet.internal_subnet.1.tags.Name}"
-        ),
-        "${aws_subnet.internal_subnet.2.tags.Name}" , map(
-          "id", "${aws_subnet.internal_subnet.2.id}",
-          "az", "${aws_subnet.internal_subnet.2.availability_zone}",
-          "cidr", "${aws_subnet.internal_subnet.2.cidr_block}",
-          "name", "${aws_subnet.internal_subnet.2.tags.Name}"
-        ),
-        "${aws_subnet.internal_subnet.3.tags.Name}" , map(
-          "id", "${aws_subnet.internal_subnet.3.id}",
-          "az", "${aws_subnet.internal_subnet.3.availability_zone}",
-          "cidr", "${aws_subnet.internal_subnet.3.cidr_block}",
-          "name", "${aws_subnet.internal_subnet.3.tags.Name}"
-        ),
-    )
-  }"
+  value = {
+    id = "${aws_subnet.internal_subnet.*.id}"
+    az = "${aws_subnet.internal_subnet.*.availability_zone}"
+    cidr = "${aws_subnet.internal_subnet.*.cidr_block}"
+    name = "${aws_subnet.internal_subnet.*.tags.Name}"
+  }
 }
+
+//# maps currently used by kops pipeline
+//output "vpc" {
+//  value = "${
+//     map(
+//        "id", "${aws_vpc.mod.id}",
+//        "cidr", "${aws_vpc.mod.cidr_block}",
+//       )
+//     }"
+//}
+//
+//output "public_subnet_objects" {
+//  value = "${
+//   map(
+//       "${aws_subnet.public_subnet.0.tags.Name}" , map(
+//          "id", "${aws_subnet.public_subnet.0.id}",
+//          "az", "${aws_subnet.public_subnet.0.availability_zone}",
+//          "cidr", "${aws_subnet.public_subnet.0.cidr_block}",
+//          "name", "${aws_subnet.public_subnet.0.tags.Name}"
+//        ),
+//    )
+//  }"
+//}
+//
+//output "nat_subnet_objects" {
+//
+//  value = "${
+//   map(
+//       "${aws_subnet.nat_subnet.0.tags.Name}" , map(
+//          "id", "${aws_subnet.nat_subnet.0.id}",
+//          "az", "${aws_subnet.nat_subnet.0.availability_zone}",
+//          "cidr", "${aws_subnet.nat_subnet.0.cidr_block}",
+//          "name", "${aws_subnet.nat_subnet.0.tags.Name}"
+//        ),
+//    )
+//  }"
+//}
+//
+//
+//output "internal_subnet_objects" {
+//  value = "${
+//   map(
+//       "${aws_subnet.internal_subnet.0.tags.Name}" , map(
+//          "id", "${aws_subnet.internal_subnet.0.id}",
+//          "az", "${aws_subnet.internal_subnet.0.availability_zone}",
+//          "cidr", "${aws_subnet.internal_subnet.0.cidr_block}",
+//          "name", "${aws_subnet.internal_subnet.0.tags.Name}"
+//        ),
+//    )
+//  }"
+//}
+
+//output "public_subnet_objects" {
+//  value = "${
+//   map(
+//       "${aws_subnet.public_subnet.0.tags.Name}" , map(
+//          "id", "${aws_subnet.public_subnet.0.id}",
+//          "az", "${aws_subnet.public_subnet.0.availability_zone}",
+//          "cidr", "${aws_subnet.public_subnet.0.cidr_block}",
+//          "name", "${aws_subnet.public_subnet.0.tags.Name}"
+//        ),
+//        "${aws_subnet.public_subnet.1.tags.Name}" , map(
+//          "id", "${aws_subnet.public_subnet.1.id}",
+//          "az", "${aws_subnet.public_subnet.1.availability_zone}",
+//          "cidr", "${aws_subnet.public_subnet.1.cidr_block}",
+//          "name", "${aws_subnet.public_subnet.1.tags.Name}"
+//        ),
+//        "${aws_subnet.public_subnet.2.tags.Name}" , map(
+//          "id", "${aws_subnet.public_subnet.2.id}",
+//          "az", "${aws_subnet.public_subnet.2.availability_zone}",
+//          "cidr", "${aws_subnet.public_subnet.2.cidr_block}",
+//          "name", "${aws_subnet.public_subnet.2.tags.Name}"
+//        ),
+//        "${aws_subnet.public_subnet.3.tags.Name}" , map(
+//          "id", "${aws_subnet.public_subnet.3.id}",
+//          "az", "${aws_subnet.public_subnet.3.availability_zone}",
+//          "cidr", "${aws_subnet.public_subnet.3.cidr_block}",
+//          "name", "${aws_subnet.public_subnet.3.tags.Name}"
+//        ),
+//    )
+//  }"
+//}
+//
+//output "nat_subnet_objects" {
+//
+//  value = "${
+//   map(
+//       "${aws_subnet.nat_subnet.0.tags.Name}" , map(
+//          "id", "${aws_subnet.nat_subnet.0.id}",
+//          "az", "${aws_subnet.nat_subnet.0.availability_zone}",
+//          "cidr", "${aws_subnet.nat_subnet.0.cidr_block}",
+//          "name", "${aws_subnet.nat_subnet.0.tags.Name}"
+//        ),
+//        "${aws_subnet.nat_subnet.1.tags.Name}" , map(
+//          "id", "${aws_subnet.nat_subnet.1.id}",
+//          "az", "${aws_subnet.nat_subnet.1.availability_zone}",
+//          "cidr", "${aws_subnet.nat_subnet.1.cidr_block}",
+//          "name", "${aws_subnet.nat_subnet.1.tags.Name}"
+//        ),
+//        "${aws_subnet.nat_subnet.2.tags.Name}" , map(
+//          "id", "${aws_subnet.nat_subnet.2.id}",
+//          "az", "${aws_subnet.nat_subnet.2.availability_zone}",
+//          "cidr", "${aws_subnet.nat_subnet.2.cidr_block}",
+//          "name", "${aws_subnet.nat_subnet.2.tags.Name}"
+//        ),
+//        "${aws_subnet.nat_subnet.3.tags.Name}" , map(
+//          "id", "${aws_subnet.nat_subnet.3.id}",
+//          "az", "${aws_subnet.nat_subnet.3.availability_zone}",
+//          "cidr", "${aws_subnet.nat_subnet.3.cidr_block}",
+//          "name", "${aws_subnet.nat_subnet.3.tags.Name}"
+//        ),
+//    )
+//  }"
+//}
+//
+//
+//output "internal_subnet_objects" {
+//  value = "${
+//   map(
+//       "${aws_subnet.internal_subnet.0.tags.Name}" , map(
+//          "id", "${aws_subnet.internal_subnet.0.id}",
+//          "az", "${aws_subnet.internal_subnet.0.availability_zone}",
+//          "cidr", "${aws_subnet.internal_subnet.0.cidr_block}",
+//          "name", "${aws_subnet.internal_subnet.0.tags.Name}"
+//        ),
+//        "${aws_subnet.internal_subnet.1.tags.Name}" , map(
+//          "id", "${aws_subnet.internal_subnet.1.id}",
+//          "az", "${aws_subnet.internal_subnet.1.availability_zone}",
+//          "cidr", "${aws_subnet.internal_subnet.1.cidr_block}",
+//          "name", "${aws_subnet.internal_subnet.1.tags.Name}"
+//        ),
+//        "${aws_subnet.internal_subnet.2.tags.Name}" , map(
+//          "id", "${aws_subnet.internal_subnet.2.id}",
+//          "az", "${aws_subnet.internal_subnet.2.availability_zone}",
+//          "cidr", "${aws_subnet.internal_subnet.2.cidr_block}",
+//          "name", "${aws_subnet.internal_subnet.2.tags.Name}"
+//        ),
+//        "${aws_subnet.internal_subnet.3.tags.Name}" , map(
+//          "id", "${aws_subnet.internal_subnet.3.id}",
+//          "az", "${aws_subnet.internal_subnet.3.availability_zone}",
+//          "cidr", "${aws_subnet.internal_subnet.3.cidr_block}",
+//          "name", "${aws_subnet.internal_subnet.3.tags.Name}"
+//        ),
+//    )
+//  }"
+//}

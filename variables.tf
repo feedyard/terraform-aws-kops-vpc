@@ -16,16 +16,6 @@ variable "cidr_reservation_offset" {
   default     = "0"
 }
 
-# default public subnet size  /23 = 512 addresses
-variable "public_subnet_size" {
-  default = "23"
-}
-
-# default starting point for public subnets in up to four available zones 0f /23
-variable "public_subnet_start" {
-  default = ["0","2","4","6"]
-}
-
 # default nat subnet size  /22 = 1024 addresses
 variable "nat_subnet_size" {
   default = "22"
@@ -33,7 +23,17 @@ variable "nat_subnet_size" {
 
 # default starting point for nat subnets in up to four available zones 0f /22
 variable "nat_subnet_start" {
-  default = ["8","12","16","20"]
+  default = ["0","4","8","12"]
+}
+
+# default public subnet size  /23 = 512 addresses
+variable "public_subnet_size" {
+  default = "23"
+}
+
+# default starting point for public subnets in up to four available zones 0f /23
+variable "public_subnet_start" {
+  default = ["16","18","20","22"]
 }
 
 # default internal subnet size  /23 = 512 addresses
@@ -53,12 +53,12 @@ variable "azs" {
 
 # should be true to use private DNS within the VPC
 variable "enable_dns_hostnames" {
-  default     = "false"
+  default     = "true"
 }
 
 # should be true to use private DNS within the VPC
 variable "enable_dns_support" {
-  default     = "false"
+  default     = "true"
 }
 
 # should be true if you do want to auto-assign public IP on launch

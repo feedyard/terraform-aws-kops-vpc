@@ -62,6 +62,12 @@ output "natgw_ids" {
   value = ["${aws_nat_gateway.natgw.*.id}"]
 }
 
+output "natgw_objects" {
+  value = {
+    id = "${aws_nat_gateway.natgw.*.id}"
+  }
+}
+
 # list of public routing table ids
 output "public_route_table_ids" {
   value = ["${aws_route_table.public.*.id}"]

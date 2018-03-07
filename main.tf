@@ -18,6 +18,7 @@ resource "aws_nat_gateway" "natgw" {
   allocation_id = "${element(aws_eip.nateip.*.id, count.index)}"
   subnet_id     = "${element(aws_subnet.public_subnet.*.id, count.index)}"
   count         = "${length(var.azs) * lookup(map(var.enable_nat_gateway, 1), "true", 0)}"
+  tags          = "${merge(var.tags,map(format("kubernetes.io/cluster/%s",var.k8_cluster_name),"shared"))}"
 
   depends_on = ["aws_internet_gateway.mod"]
 }
@@ -47,6 +48,8 @@ resource "aws_route_table_association" "nat_subnet" {
   count          = "${length(var.azs)}"
   subnet_id      = "${element(aws_subnet.nat_subnet.*.id, count.index)}"
   route_table_id = "${element(aws_route_table.nat.*.id, count.index)}"
+
+  depends_on = ["aws_route_table.nat"]
 }
 
 # public subnets
